@@ -1,1 +1,4 @@
-This file was created by IntelliJ IDEA 10.5.2 for binding GitHub repository
+Simple Groovy based Spring Project.
+
+Provides a simple node service to save and find nodes in mysql database.
+The project is demo how to use groovy and spring together.
