@@ -32,7 +32,7 @@ public class NodeServiceImplTest
     }
 
     @Test
-    @Required(max = 100, average = 50)
+    @Required(max = 200, average = 150)
     void testGetAll() throws Exception
     {
         def nodes = nodeService.getAll()

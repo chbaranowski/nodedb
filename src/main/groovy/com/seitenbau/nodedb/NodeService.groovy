@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import javax.annotation.PostConstruct
 
 interface NodeService
 {
@@ -19,12 +20,27 @@ interface NodeService
 class NodeServiceImpl implements NodeService
 {
 
-    def jdbcTemplate;
+    JdbcTemplate jdbcTemplate
 
     @Autowired
     public void setDataSource(DataSource dataSource)
     {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @PostConstruct
+    @Transactional
+    def init()
+    {
+       jdbcTemplate.execute("""
+       CREATE TABLE IF NOT EXISTS node (
+            id int(11) NOT NULL AUTO_INCREMENT,
+            type varchar(20) NOT NULL,
+            parent int(11) DEFAULT NULL,
+            PRIMARY KEY (id),
+            KEY type (type,parent)
+       ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2
+       """);
     }
 
     @Transactional
@@ -35,7 +51,7 @@ class NodeServiceImpl implements NodeService
         for(row in result)
         {
            def node = new Node(row)
-            nodes.add(node)
+           nodes.add(node)
         }
         return nodes;
     }
