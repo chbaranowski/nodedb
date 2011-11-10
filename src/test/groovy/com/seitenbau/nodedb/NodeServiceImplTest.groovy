@@ -16,13 +16,13 @@ public class NodeServiceImplTest
     @Autowired
     NodeService nodeService
 
-    def simpleNode = new Node(id: 1, type: 'music', parent: null)
+    def simpleNode = new Node(type: 'music', parent: null)
 
     @Before
     void setup()
     {
         nodeService.clear()
-        nodeService.save(new Node(type: 'music', parent: null))
+        nodeService.save(simpleNode)
     }
 
     @Test
@@ -37,9 +37,7 @@ public class NodeServiceImplTest
     {
         def node = new Node(type: 'user', properties: [new NodeProperty(key: 'name', value: 'Rainer')])
         nodeService.save(node)
-        def nodes = nodeService.getAll()
-        node.id = 2
-        assert nodes == [simpleNode, node]
+        assert nodeService.getAll() == [simpleNode, node]
     }
 
     @Test
@@ -50,14 +48,6 @@ public class NodeServiceImplTest
            node.properties += new NodeProperty(key: 'name', value: 'Rainer')
         }
         nodeService.save(node)
-
-        def startNano = System.nanoTime()
-        def startMs = System.currentTimeMillis()
-        def nodes = nodeService.getAll()
-        println("Time : " + (System.nanoTime() - startNano))
-        println("Time MS : " + (System.currentTimeMillis() -startMs))
-
-        node.id = 2
-        assert nodes == [simpleNode, node]
+        assert nodeService.getAll() == [simpleNode, node]
     }
 }

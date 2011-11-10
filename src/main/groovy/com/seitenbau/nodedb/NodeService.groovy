@@ -93,7 +93,8 @@ class NodeServiceImpl implements NodeService
     void save(Node node)
     {
         def id = incrementer.nextIntValue()
-        jdbcTemplate.update("insert into node (id, type, parent) values (?, ?, ?)", id, node.type, node.parent)
+        node.id = id
+        jdbcTemplate.update("insert into node (id, type, parent) values (?, ?, ?)", node.id, node.type, node.parent)
         node.properties.each { property ->
             jdbcTemplate.update("insert into nodeproperty (name, value, node) values (?,?,?)",
                     property.key, property.value, id)
