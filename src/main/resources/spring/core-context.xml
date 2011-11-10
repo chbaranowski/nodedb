@@ -22,7 +22,14 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-         <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="nodeIncrementer"
+          class="org.springframework.jdbc.support.incrementer.MySQLMaxValueIncrementer">
+        <property name="columnName" value="id"/>
+        <property name="incrementerName" value="Node_Sequence"/>
+        <property name="dataSource" ref="dataSource" />
     </bean>
 
 </beans>

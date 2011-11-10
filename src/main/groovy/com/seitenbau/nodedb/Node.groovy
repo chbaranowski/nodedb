@@ -10,4 +10,6 @@ class Node implements Serializable
     Integer id
     String type
     Integer parent
+    Collection<NodeProperty> properties = new ArrayList<NodeProperty>()
+    Collection<Node> children = new ArrayList<Node>()
 }
