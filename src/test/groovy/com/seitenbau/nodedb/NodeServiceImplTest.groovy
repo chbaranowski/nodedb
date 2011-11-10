@@ -28,26 +28,39 @@ public class NodeServiceImplTest
     @Test
     void getAll() throws Exception
     {
-        def nodes = nodeService.getAll()
-        assert nodes == [simpleNode]
+        assert nodeService.getAll() == [simpleNode]
     }
 
     @Test
-    void saveNodeWithProperty() throws Exception
+    void save_NodeWithProperty() throws Exception
     {
-        def node = new Node(type: 'user', properties: [new NodeProperty(key: 'name', value: 'Rainer')])
-        nodeService.save(node)
-        assert nodeService.getAll() == [simpleNode, node]
+        def nodeWithProperty = new Node(type: 'user',
+                properties: [new NodeProperty(key: 'name', value: 'Rainer')])
+        nodeService.save(nodeWithProperty)
+        assert nodeService.getAll() == [simpleNode, nodeWithProperty]
     }
 
     @Test
-    void saveNodeWithProperties() throws Exception
+    void save_NodeWithProperties() throws Exception
     {
-        def node = new Node(type: 'user')
+        def nodeWithProperties = new Node(type: 'user')
         (1..1000).each {
-           node.properties += new NodeProperty(key: 'name', value: 'Rainer')
+            nodeWithProperties.properties += new NodeProperty(key: 'name', value: 'Rainer')
         }
-        nodeService.save(node)
-        assert nodeService.getAll() == [simpleNode, node]
+        nodeService.save(nodeWithProperties)
+        assert nodeService.getAll() == [simpleNode, nodeWithProperties]
+    }
+
+    @Test
+    void getAll_ManyNodes() throws Exception
+    {
+        def nodes = [simpleNode]
+        (1..100).each {
+            nodes += nodeService.save(new Node(type: 'music'))
+        }
+        (1..100).each {
+            nodes += nodeService.save(new Node(type: 'photo'))
+        }
+        assert nodeService.getAll() == nodes
     }
 }

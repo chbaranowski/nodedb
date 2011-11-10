@@ -15,7 +15,7 @@ interface NodeService
 
     void clear()
 
-    void save(Node node)
+    Node save(Node node)
 }
 
 @Service
@@ -75,7 +75,7 @@ class NodeServiceImpl implements NodeService
             if (node?.id != row.id)
                 nodes += [node = new Node(id: row.id, type: row.type, parent: row.parent)]
             if (row.name)
-                node.properties.add(new NodeProperty(key: row.name, value: row.value))
+                node.properties += new NodeProperty(key: row.name, value: row.value)
         }
         return nodes;
     }
@@ -90,15 +90,16 @@ class NodeServiceImpl implements NodeService
     }
 
     @Transactional
-    void save(Node node)
+    Node save(Node node)
     {
         def id = incrementer.nextIntValue()
         node.id = id
         jdbcTemplate.update("insert into node (id, type, parent) values (?, ?, ?)", node.id, node.type, node.parent)
         node.properties.each { property ->
             jdbcTemplate.update("insert into nodeproperty (name, value, node) values (?,?,?)",
-                    property.key, property.value, id)
+                    property.key, property.value, node.id)
         }
+        return node;
     }
 
 }
