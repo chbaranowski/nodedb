@@ -34,12 +34,6 @@ class NodeServiceImpl implements NodeService
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @PostConstruct
-    @Transactional
-    def init()
-    {
-    }
-
     @Transactional
     List<Node> getAll()
     {
