@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/spring/core-context.xml")
+@ContextConfiguration(["classpath:/spring/core-context.xml", "classpath:spring/hsql-context.xml"])
 public class NodeServiceImplTest
 {
 
