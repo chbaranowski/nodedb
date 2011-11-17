@@ -1,0 +1,25 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd
+                            http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="000" author="tux2323">
+        <createTable tableName="Node">
+            <column name="ID" type="int"/>
+            <column name="TYPE" type="varchar"/>
+            <column name="PARENT" type="int"/>
+        </createTable>
+        <createTable tableName="nodeproperty">
+            <column name="NAME" type="varchar"/>
+            <column name="VALUE" type="varchar"/>
+            <column name="NODE" type="int"/>
+        </createTable>
+        <createTable tableName="node_sequence">
+            <column name="ID" type="identity"/>
+        </createTable>
+        <insert tableName="node_sequence">
+            <column name="ID">0</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
