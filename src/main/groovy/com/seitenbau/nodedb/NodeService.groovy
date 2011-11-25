@@ -1,9 +1,14 @@
 package com.seitenbau.nodedb
 
+import groovy.sql.Sql
+import java.sql.Connection
+import java.sql.SQLException
 import javax.annotation.PostConstruct
 import javax.sql.DataSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.dao.DataAccessException
+import org.springframework.jdbc.core.ConnectionCallback
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.support.incrementer.DataFieldMaxValueIncrementer
 import org.springframework.stereotype.Service
@@ -19,7 +24,7 @@ interface NodeService
 }
 
 @Service
-class NodeServiceImpl implements NodeService
+class JdbcNodeService implements NodeService
 {
 
     @Autowired
@@ -28,20 +33,51 @@ class NodeServiceImpl implements NodeService
 
     JdbcTemplate jdbcTemplate
 
+    @PostConstruct
+    void init()
+    {
+    }
+
     @Autowired
     public void setDataSource(DataSource dataSource)
     {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource)
     }
 
     @Transactional
     List<Node> getAll()
     {
+        return jdbcTemplate.execute(new ConnectionCallback<List<Node>>()
+        {
+            List<Node> doInConnection(Connection con) throws SQLException, DataAccessException
+            {
+                def sql = new Sql(con)
+                def nodes = [], node
+                sql.eachRow("""
+                         select id, type, name, value from node
+                                   left join nodeproperty on
+                                    node.id = nodeproperty.node
+                                   order by node.id """, { row ->
+                    def id = row.id
+                    def name = row.name
+                    if (node?.id != id)
+                        nodes.add(node = new Node(id: id, type: row.type))
+                    if (name)
+                        node.properties.add(new NodeProperty(key: name, value: row.value))
+                })
+                return nodes
+            }
+        })
+    }
+
+    @Transactional
+    List<Node> getAll2()
+    {
         def result = jdbcTemplate.queryForList("select * from node left join nodeproperty on node.id = nodeproperty.node order by node.id")
         def nodes = [], node
         result.each {row ->
             if (node?.id != row.id)
-                nodes += [node = new Node(id: row.id, type: row.type, parent: row.parent)]
+                nodes.add(node = new Node(id: row.id, type: row.type, parent: row.parent))
             if (row.name)
                 node.properties += new NodeProperty(key: row.name, value: row.value)
         }

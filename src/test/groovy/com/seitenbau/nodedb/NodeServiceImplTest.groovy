@@ -7,6 +7,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.util.StopWatch
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(["classpath:/spring/core-context.xml", "classpath:spring/hsql-context.xml"])
@@ -52,15 +53,28 @@ public class NodeServiceImplTest
     }
 
     @Test
-    void getAll_ManyNodes() throws Exception
+    void getAll_ManyNodes_ManuelPerformanceTest() throws Exception
     {
+        StopWatch stopWatch = new StopWatch()
         def nodes = [simpleNode]
-        (1..100).each {
+        (1..1000).each {
             nodes += nodeService.save(new Node(type: 'music'))
         }
-        (1..100).each {
+        (1..1000).each {
             nodes += nodeService.save(new Node(type: 'photo'))
         }
-        assert nodeService.getAll() == nodes
+
+        def actualNodes
+
+        def count = 100
+        (1..count).each {
+            stopWatch.start(it.toString())
+            actualNodes = nodeService.getAll()
+            stopWatch.stop()
+        }
+
+        println(stopWatch.prettyPrint())
+        println(stopWatch.totalTimeMillis / count)
+        assert actualNodes == nodes
     }
 }
