@@ -71,20 +71,6 @@ class JdbcNodeService implements NodeService
     }
 
     @Transactional
-    List<Node> getAll2()
-    {
-        def result = jdbcTemplate.queryForList("select * from node left join nodeproperty on node.id = nodeproperty.node order by node.id")
-        def nodes = [], node
-        result.each {row ->
-            if (node?.id != row.id)
-                nodes.add(node = new Node(id: row.id, type: row.type, parent: row.parent))
-            if (row.name)
-                node.properties += new NodeProperty(key: row.name, value: row.value)
-        }
-        return nodes;
-    }
-
-    @Transactional
     void clear()
     {
         jdbcTemplate.update("delete from node")
