@@ -22,4 +22,18 @@
             <column name="ID">0</column>
         </insert>
     </changeSet>
+    <changeSet id="001" author="tux2323">
+        <createTable tableName="Tree">
+            <column name="id" type="int"/>
+            <column name="name" type="varchar"/>
+            <column name="lft" type="int"/>
+            <column name="rgt" type="int"/>
+        </createTable>
+        <createTable tableName="tree_sequence">
+            <column name="ID" type="identity"/>
+        </createTable>
+        <insert tableName="tree_sequence">
+            <column name="ID">0</column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

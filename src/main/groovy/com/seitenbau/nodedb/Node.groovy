@@ -12,4 +12,9 @@ class Node implements Serializable
     Node parent
     Collection<NodeProperty> properties = new ArrayList<NodeProperty>()
     Collection<Node> children = new ArrayList<Node>()
+
+    boolean isRootNode()
+    {
+        return parent == null
+    }
 }
